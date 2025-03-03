@@ -30,3 +30,27 @@ st.line_chart(predictions_df.set_index("sales_date"))
 
 if "region" in df.columns and "sales_amount" in df.columns:
     region_sales = df.groupby("region")["sales_amount"].sum().reset_index()
+    st.subheader("Total Sales by Region")
+    fig, ax = plt.subplots()
+    sns.barplot(x="region", y="sales_amount", data=region_sales, ax=ax)
+    ax.set_title("Sales by Region")
+    st.pyplot(fig)
+    
+    # Initialize your GPT wrapper (ensure your API key is set as an environment variable or passed directly)
+gpt = GPTWrapper()
+
+# Create a prompt based on your analysis (customize as needed)
+prompt = (
+    "Given the sales data, summarize the key trends observed in monthly sales "
+    "and highlight any significant changes or patterns."
+)
+
+st.subheader("AI-Generated Insights")
+if st.button("Generate Insights"):
+    with st.spinner("Generating insights..."):
+        insight_text = gpt.generate_insight(prompt)
+    if insight_text:
+        st.success("Insights generated:")
+        st.write(insight_text)
+    else:
+        st.error("Failed to generate insights. Please try again.")
